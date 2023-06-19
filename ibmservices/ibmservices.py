@@ -1,21 +1,29 @@
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV2
+from ibm_watson import SpeechToText4v,TextToSpeechV1, AssistantV2
 import os, uuid,json
 from dotenv import load_dotenv
+stt_api ='error1'
+stt_url ='error2'
+tts_api ='error3'
+tts_url ='error4'
+assistant_api = 'error5'
+assistant_url = 'error6'
+ASSISTANT_ID  = 'error7'
 
 
 load_dotenv()
 
-stt_api = os.environ["stt_api"]
-stt_url = os.environ["stt_url"]
+stt_api = os.getenv[stt_api]
 
-tts_api = os.environ["tts_api"]
-tts_url = os.environ["tts_url"]
+stt_url = os.getenv[stt_url]
 
-assistant_api = os.environ["assistant_api"]
-assistant_url = os.environ["assistant_url"]
+tts_api = os.getenv[tts_api]
+tts_url = os.getenv[tts_url]
 
-ASSISTANT_ID = os.environ["assistant_id"]
+assistant_api = os.getenv[assistant_api]
+assistant_url = os.getenv[assistant_url]
+
+ASSISTANT_ID = os.getenv[assistant_id]
 
 def speechToText(filename, extn):
     recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
