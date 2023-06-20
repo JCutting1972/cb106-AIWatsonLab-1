@@ -1,0 +1,62 @@
+
+json
+import os, uuid
+import sys
+
+from ibm_watson import SpeechToTextV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+authenticator = IAMAuthenticator('stt_key')
+speech_to_text = SpeechToTextV1(
+    authenticator=authenticator)
+
+    
+
+speech_to_text.set_service_url('stt_url')
+
+from dotenv import load_dotenv
+
+
+
+stt_api ='error1'
+stt_url ='error2'
+tts_api ='error3'
+tts_url ='error4'
+assistant_api = 'error5'
+assistant_url = 'error6'
+ASSISTANT_ID  = 'error7'
+
+
+load_dotenv()
+
+stt_api = os.environ['stt_api']
+
+stt_url = os.environ['stt_url']
+
+tts_api = os.environ['tts_api']
+tts_url = os.environ['tts_url']
+
+
+
+
+def transcribe_audio(hi): 
+   
+    stt_key = SpeechToTextV1('sst_key') 
+    stt_url = set_service_url('stt_url')
+
+    IAMauthenticator('api_key','api_url')
+    
+    audio_file = open('hi', "rb") 
+    audio_file_content = audio_file.read() 
+    audio_file.close() 
+    response = stt.recognize(audio=audio_file_content, content_type="audio/mp3", model="en-US_NarrowbandModel", continuous=True).get_result() 
+    return response 
+
+    response = transcribe_audio("audio-file.mp3") 
+    print(json.dumps(response, indent=2))
+
+
+
+
+
+
