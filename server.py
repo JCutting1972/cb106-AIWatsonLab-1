@@ -18,7 +18,7 @@ def stream_mp3(filename):
             while data:
                 yield data
                 data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mpeg3")
+    return Response(generate(), mimetype="audio/mp3")
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file():

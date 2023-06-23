@@ -1,9 +1,9 @@
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1
+from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
 import os, uuid,json
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
-stt_api ='error1'
+
 stt_url ='error2'
 tts_api ='error3'
 tts_url ='error4'
@@ -11,20 +11,29 @@ assistant_api = 'error5'
 assistant_url = 'error6'
 ASSISTANT_ID  = 'error7'
 
+tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
+tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
 
-load_dotenv()
+stt_api="kaM5cyelaSwcEZSxSCDF9wty_iO1RtNIvf5EkiM1Tbh9"
 
-stt_api = os.environ['stt_api']
+stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/2643232d-17f3-41c3-8548-1f26aa643801"
 
-stt_url = os.environ['stt_url']
+ASSISTANT_ID="cutt.joe1972@gmail.com"
 
-tts_api = os.environ['tts_api']
-tts_url = os.environ['tts_url']
+assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
+assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
 
-assistant_api = os.environ['assistant_api']
-assistant_url = os.environ['assistant_url']
 
-ASSISTANT_ID = os.environ['assistant_id']
+
+#load_dotenv()
+
+
+
+
+
+
+
+
 response = 'error8'
 def speechToText(filename, extn):
     recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
@@ -42,6 +51,7 @@ def getResponseFromAssistant(chat_text):
     session_id=session.get_result()["session_id"]
     response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
 input={'message_type': 'text','text': chat_text}).get_result()
+    
     response_text = response["output"]["generic"][0]["text"]
     authenticator = IAMAuthenticator(tts_api)
     text_to_speech = TextToSpeechV1(
@@ -58,6 +68,9 @@ input={'message_type': 'text','text': chat_text}).get_result()
             ).get_result().content)
 
     return resp_file
+
+
+
 
 
 
