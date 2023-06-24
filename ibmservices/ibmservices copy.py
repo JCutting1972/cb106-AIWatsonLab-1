@@ -4,12 +4,7 @@ import os, uuid,json
 #from dotenv import load_dotenv
 
 
-stt_url ='error2'
-tts_api ='error3'
-tts_url ='error4'
-assistant_api = 'error5'
-assistant_url = 'error6'
-ASSISTANT_ID  = 'error7'
+
 
 tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
 tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
@@ -18,11 +13,11 @@ stt_api="kaM5cyelaSwcEZSxSCDF9wty_iO1RtNIvf5EkiM1Tbh9"
 
 stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/2643232d-17f3-41c3-8548-1f26aa643801"
 
-ASSISTANT_ID="cutt.joe1972@gmail.com"
+
 
 assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
 assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
-assistant_id="cutt.joe1972@gmail.com"
+
 
 
 #load_dotenv()

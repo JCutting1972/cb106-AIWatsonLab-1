@@ -1,5 +1,6 @@
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
+#from Ibm_watson import SpeechToTextV2
 import os, uuid,json
 #from dotenv import load_dotenv
 
@@ -27,78 +28,48 @@ assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131
 
 #load_dotenv()
 
-result - 'error15'
-chat_text = 'error14'
 
 
-session_id = 'error11'
-
-response_text = 'error10'
-response = 'error8'
 def speechToText(filename, extn):
-    recognition_service=SpeechToTextV2(IAMAuthenticator(stt_api))
+    recognition_service=SpeechToTextV1(authenticator=IAMAuthenticator(stt_api))
     recognition_service.set_service_url(stt_url)
     SPEECH_EXTENSION="*."+extn
     SPEECH_AUDIOTYPE="audio/"+extn
     audio_file=open(filename,"rb")
     result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
     return result["results"][0]["alternatives"][0]["transcript"]
-    
-def getResponseFromAssistant():
+     
+def getResponseFromAssistant(chat_text):
 
 
-    assistant=AssistantV2(version='2021-06-14',authenticator=IAMAuthenticator(assistant_api))
+    assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
     assistant.set_service_url(assistant_url)
-  #  session=assistant.create_session(assistant_id =ASSISTANT_ID)
-   # session_id=session.get_result()["session_id"]
+    session=assistant.create_session(assistant_id =ASSISTANT_ID)
+    session_id=session.get_result()[session_id]
+    response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
+input={'message_type': 'text','text': chat_text}).get_result()
     
-    session_id = assistant.create_session(assistant_id = ASSISTANT_ID).get_result()
-    
-    print(jason.dumps(session_id,indent=2)
-    
-   
-    
-    response = assistant.message(assistant_id='ASSISTANT_ID',session_id=session_id, input={message_type='text', text=chat_text'}).get_result()
+    response_text = response["output"]["generic"][0]["text"]
 
-#print(json.dumps(response, indent=2))
+    text_to_speech.set_service_url(tts_url)
+    resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
+    with open(resp_file, 'wb') as audio_file:
+        audio_file.write(
+            text_to_speech.synthesize(
+                response_text,
+                voice='en-US_MichaelV3Voice',
+                accept='audio/mp3'        
+            ).get_result().content)
 
- 
-#print(jason.dumps(session_id,indent=2)
- 
- 
- 
- 
-  #  print(jason.dumps,response,indent=2)
+    return resp_file
 
 
 
 
 
 
-    #response_text = response["output"]["generic"][0]["text"]
-   # authenticator = IAMAuthenticator(tts_api)
-   # return  response_text
-   # print('response_text')
-   # text_to_speech = TextToSpeechV1(
-   #     authenticator=authenticator
-   # )
-   # text_to_speech.set_service_url(tts_url)
-    #resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-    #with open(resp_file, 'wb') as audio_file:
-     #   audio_file.write(
-      #      text_to_speech.synthesize(
-      #          response_text,
-       #         voice='en-US_MichaelV3Voice',
-       #         accept='audio/mp3'        
-        #    ).get_result().content)
-
-  #  return resp_file
 
 
-print(response_text)
-print(response)
-print('response_text')
-print(results)
 
     
 
