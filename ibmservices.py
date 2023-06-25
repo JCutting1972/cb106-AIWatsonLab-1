@@ -3,9 +3,11 @@ from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
 import os, uuid,json
 #from dotenv import load_dotenv
 
+from flask import Flask, render_template, request, Response
+
 
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
+
 #from Ibm_watson import SpeechToTextV2
 import os, uuid,json
 #from dotenv import load_dotenv
@@ -13,32 +15,6 @@ import os, uuid,json
 
 
 
-tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
-tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
-
-stt_api="kaM5cyelaSwcEZSxSCDF9wty_iO1RtNIvf5EkiM1Tbh9"
-
-stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/2643232d-17f3-41c3-8548-1f26aa643801"
-
-
-
-assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
-assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
-
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
-import os, uuid,json
-#from dotenv import load_dotenv
-
-
-
-
-tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
-tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
-
-stt_api="kaM5cyelaSwcEZSxSCDF9wty_iO1RtNIvf5EkiM1Tbh9"
-
-stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/2643232d-17f3-41c3-8548-1f26aa643801"
 
 
 
@@ -50,6 +26,9 @@ tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b644
 stt_api="kaM5cyelaSwcEZSxSCDF9wty_iO1RtNIvf5EkiM1Tbh9"
 
 stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/2643232d-17f3-41c3-8548-1f26aa643801"
+
+
+
 
 ASSISTANT_ID="d3c09daa-3d64-4926-bf44-6c1ae81cdba7"
 
@@ -75,21 +54,21 @@ def getResponseFromAssistant(chat_text):
 input={'message_type': 'text','text': chat_text}).get_result()
     
     response_text = response["output"]["generic"][0]["text"]
-    authenticator = IAMAuthenticator(tts_api)
-    text_to_speech = TextToSpeechV1(
-        authenticator=authenticator
+   # authenticator = IAMAuthenticator(tts_api)
+    #text_to_speech = TextToSpeechV1(
+     #   authenticator=authenticator
     )
-    text_to_speech.set_service_url(tts_url)
-    resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-    with open(resp_file, 'wb') as audio_file:
-        audio_file.write(
-            text_to_speech.synthesize(
-                response_text,
-                voice='en-US_MichaelV3Voice',
-                accept='audio/mp3'        
-            ).get_result().content)
+  #  text_to_speech.set_service_url(tts_url)
+   # resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
+    #with open(resp_file, 'wb') as audio_file:
+     #   audio_file.write(
+      #      text_to_speech.synthesize(
+       #         response_text,
+        #        voice='en-US_MichaelV3Voice',
+          #      accept='audio/mp3'        
+           # ).get_result().content)
 
-    return resp_file
+   # return resp_file
 
 
 
@@ -109,7 +88,7 @@ def stream_mp3(filename):
             while data:
                 yield data
                 data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mp3")
+    return Response(generate(), mimetype="audio/mpeg3")
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file():
@@ -125,8 +104,8 @@ def upload_file():
                 stt_text=speechToText(f.filename,extn)
                 os.remove(f.filename)
                 
-                get_tt = getResponseFromAssistant(stt_text)
-                return get_tt
+                return getResponseFromAssistant(stt_text)
+                
             else:
                 raise Exception("Sorry. No filename recognized")
         except Exception as excp:

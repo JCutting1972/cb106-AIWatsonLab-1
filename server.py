@@ -1,6 +1,6 @@
-from dotenv import load_dotenv
+
 from flask import Flask, render_template, request, Response
-from ibmservices import load_dotenv
+
 import os
 
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
