@@ -43,5 +43,12 @@ def speechToText(filename, extn):
     SPEECH_AUDIOTYPE="audio/"+extn
     audio_file=open(filename,"rb")
     result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
-    return result["results"][0]["alternatives"][0]["transcript"]
-print (result)
+   # return result["results"][0]["alternatives"][0]["transcript"]
+#print (result)
+
+    json_string = json.dumps(result)
+    parsed_response = json.loads(json_string)
+    #french_text = (parsed_response['translations'][0]['translation'])
+    print (parced_response)
+
+
