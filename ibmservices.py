@@ -1,14 +1,15 @@
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
+from ibm_watson import TextToSpeechV1, AssistantV1, AssistantV2
 import os, uuid,json
 #from dotenv import load_dotenv
 
 from flask import Flask, render_template, request, Response
+#import ibm-watson
+from ibm-watson import SpeechToTextV2
+import ibm_watson
 
 
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-
-#from Ibm_watson import SpeechToTextV2
+#from ibm_watson import SpeechToTextV2
 import os, uuid,json
 #from dotenv import load_dotenv
 
@@ -63,33 +64,147 @@ assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131
 
 
 
+Creative
+
+More
+Balanced
+
+More
+Precise
+undefined
+Welcome back! What would you like to chat about?
+Received message. Welcome back! What would you like to chat about?
+How do I import SpeechToTextV2 from IBM. Im using python3.8.0
+Sent message. How do I import SpeechToTextV2 from IBM. Im using python3.8.0
+Searching for: How to import SpeechToTextV2 from IBM in python3.8.0
+
+Searching for: How to import SpeechToTextV2 from IBM in python3.8.0
+
+Generating answers for you…
+
+Generating answers for you…
+
+To import SpeechToTextV2 from IBM in python3.8.0, you can use the following code snippet:
+
+from ibm_watson import SpeechToTextV2
+Copy
+You will also need to install the ibm-watson package using pip. You can do this by running the following command in your terminal:
+
+pip install ibm-watson
+Copy
+I hope that helps! Let me know if you have any other questions.
+
+Received message. To import SpeechToTextV2 from IBM in python3.8.0, you can use the following code snippet: ```python from ibm_watson import SpeechToTextV2 ``` You will also need to install the ibm-watson package using pip. You can do this by running the following command in your terminal: ```bash pip install ibm-watson ``` I hope that helps! Let me know if you have any other questions.
+Learn more:
+1. ibm.com
+2. github.com
+3. stackoverflow.com
+1
+of
+30
+What other packages do I need to install?
+Sent message. What other packages do I need to install?
+Searching for: dependencies for ibm-watson SpeechToTextV2
+
+Searching for: dependencies for ibm-watson SpeechToTextV2
+
+Generating answers for you…
+
+Generating answers for you…
+
+You will need to install the ibm-cloud-sdk-core package as well as the ibm-watson package. You can do this by running the following command in your terminal:
+
+pip install ibm-cloud-sdk-core ibm-watson
+Copy
+I hope that helps! Let me know if you have any other questions.
+
+Received message. You will need to install the ibm-cloud-sdk-core package as well as the ibm-watson package. You can do this by running the following command in your terminal: ```bash pip install ibm-cloud-sdk-core ibm-watson ``` I hope that helps! Let me know if you have any other questions.
+Learn more:
+1. cloud.ibm.com
+2. cloud.ibm.com
+3. ibm.com
+4. stackoverflow.com
+5. cloud.ibm.com
+6. ibm.com
++4 more
+2
+of
+30
+Can you give me an example of how to use SpeechToTextV2?
+Sent message. Can you give me an example of how to use SpeechToTextV2?
+Searching for: example of using SpeechToTextV2 from IBM
+
+Searching for: example of using SpeechToTextV2 from IBM
+
+Generating answers for you…
+
+Generating answers for you…
+
+Here is an example of how to use SpeechToTextV2 from IBM:
+
+import json
+from ibm_watson import SpeechToTextV2
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+authenticator = IAMAuthenticator('apikey')
+speech_to_text = SpeechToTextV2(
+    authenticator=authenticator
+)
+
+speech_to_text.set_service_url('https://api.us-south.speech-to-text.watson.cloud.ibm.com')
+
+with open('audio-file.flac', 'rb') as audio_file:
+    result = speech_to_text.recognize(
+        audio=audio_file,
+        content_type='audio/flac',
+        model='en-US_NarrowbandModel',
+        continuous=True
+    ).get_result()
+
+print(json.dumps(result, indent=2))
+
+
+
+
 app = Flask(__name__)
 
 #response_text = None
 
 @app.route('/')
-def file_uploader():
-   return render_template('upload.html')
+def input_text():
+   return render_template('input.html')
 
 @app.route('/speechToText', methods = ['GET', 'POST'])
-def speechToTest(filename, extn):
+def speechToText():
 # if request.method == 'POST':
-    recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
-    recognition_service.set_service_url(stt_url)
-    SPEECH_EXTENSION="*."+extn
-    SPEECH_AUDIOTYPE="audio/"+extn
-    audio_file=open(filename,"rb")
-    response=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
+    if request.method == 'POST':
+      input_value = request.form['input_text']
+      service = ibm-watson.SpeechToTextV2(apikey=assistant_api,url=assistant_url)
+      with open(input_value, 'rb') as audio_file:
+          speech_recognition_result = service.recognize(audio = audio_file, content_tpye='audio/mp3').get_result()
+
+          
+      transcript = speech_recognition_results['results'][0]['alternatives'][0]['transcript']
+      
+    
+      return render_template('output.html', output=transcript)
+
+   # recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
+    #recognition_service.set_service_url(stt_url)
+    #SPEECH_EXTENSION="*."+extn
+    #SPEECH_AUDIOTYPE="audio/"+extn
+    #audio_file=open(filename,"rb")
+    #response=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
     
     #return result["results"][0]["alternatives"][0]["transcript"]
-    response_text = response["output"]["generic"][0]["text"]
+    #response_text = response["output"]["generic"][0]["text"]
     
     
     
-    output = response_text
+    #output = response_text
    
    
-    return render_template('output.html', output = output)
+   # return render_template('output.html', output = output)
 
 
 
