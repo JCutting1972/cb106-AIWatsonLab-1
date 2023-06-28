@@ -3,6 +3,7 @@ from ibm_watson import TextToSpeechV1, AssistantV2, SpeechToTextV1, AssistantV1
 import os, uuid,json
 from flask import Flask, render_template, request, Response
 
+from package import ibmservices
 
 tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
 tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
@@ -13,58 +14,16 @@ stt_url="https://api.au-syd.speech-to-text.watson.cloud.ibm.com/instances/264323
 
 ASSISTANT_ID="d3c09daa-3d64-4926-bf44-6c1ae81cdba7"
 
-app = Flask(__name__)
+
 assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
 assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
 
-def speechToText(filename, extn):
-    recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
-    recognition_service.set_service_url(stt_url)
-    SPEECH_EXTENSION="*."+extn
-    SPEECH_AUDIOTYPE="audio/"+extn
-    audio_file=open(filename,"rb")
-    result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
-    return result["results"][0]["alternatives"][0]["transcript"]
-
-       # return (json.dumps(result, indent=2))
-   
-   
-def getResponseFromAssistant(chat_text):   
-   
-   
-   # recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
-    #recognition_service.set_service_url(stt_url)
-    #SPEECH_EXTENSION="*."+extn
-    #SPEECH_AUDIOTYPE="audio/"+extn
-    #audio_file=open(filename,"rb")
-    #result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
-    #return result["results"][0]["alternatives"][0]["transcript"]
+app = Flask(__name__)
 
 
-    
-   assistant=AssistantV1(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
-   assistant.set_service_url(assistant_url)
-   session=assistant.create_session(assistant_id =ASSISTANT_ID)
-   session_id=session.get_result()["session_id"]
-   response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
-input={'message_type': 'text','text': chat_text}).get_result()
-   response_text = response["output"]["generic"][0]["text"]
-   authenticator = IAMAuthenticator(tts_api)
-   text_to_speech = TextToSpeechV1(authenticator=IAMauthenticator(assistant_api))
-   text_to_speech.set_service_url(tts_url)
-   resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-   with open(resp_file, 'wb') as audio_file:
-        audio_file.write(
-            text_to_speech.synthesize(
-                response_text,
-                voice='en-US_MichaelV3Voice',
-                accept='audio/mp3'        
-            ).get_result().content)
-
-   return resp_file
 
 
-#response_text = None
+response_text = None
 
 @app.route('/')
 def file_uploader():
@@ -91,11 +50,11 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-                stt_text = speechToText(f.filename,extn)
+                stt_text = ibmservices.speechToText(f.filename,extn)
                 os.remove(f.filename)
                 
-                stttt =  getResponseFromAssistant(stt_text)
-                return stttt
+                return ibmservices.getResponseFromAssistant(stt_text)
+                
             else: 
                 raise Exception("Sorry. No filename recognized")
         except Exception as excp:

@@ -1,5 +1,5 @@
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
-from ibm_watson import SpeechToTextV1
+from ibm_watson import SpeechToTextV1, TextToSpeechV1, AssistantV2
 
 #from dotenv import load_dotenv
 
