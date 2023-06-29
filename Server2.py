@@ -27,7 +27,7 @@ response_text = None
 
 @app.route('/')
 def file_uploader():
-   return render_template('upload.html')
+   return render_template('input.html')
 
 @app.route('/audio/<filename>')
 def stream_mp3(filename):
@@ -50,10 +50,15 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-                stt_text = ibmservices.speechToText(f.filename,extn)
+                stt_text = ibmservices.speechToText(f.filename,"mp3")
                 os.remove(f.filename)
-                
-                return ibmservices.getResponseFromAssistant(stt_text)
+                #jason_string = json.dumps(stt_text)
+               # response1 = ibmservices.getResponseFromAssistant(stt_text)
+                transcript = stt_text['results'][0]['alternatives'][0]['transcript']
+                output = json.loads(transcript)
+
+               
+                return  render_template(output.html,output= output)
                 
             else: 
                 raise Exception("Sorry. No filename recognized")
