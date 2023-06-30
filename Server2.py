@@ -29,10 +29,10 @@ response_text = None
 def file_uploader():
    return render_template('input.html')
 
-@app.route('/audio/<filename>')
-def stream_mp3(filename):
+@app.route(file)
+def stream_mp3(file):
     def generate():
-        with open(filename, 'rb') as fmp3:
+        with open(file, 'rb') as fmp3:
             data = fmp3.read(1024)
             while data:
                 yield data
@@ -44,12 +44,12 @@ def upload_file():
    if request.method == 'POST':
         f = request.files['file']
         try:
-            if f.filename != '':
+            if file != '':
                 l = len(f.filename)
                 extn = f.filename[l-3:l]
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
-                f.save(f.filename)
+                f.save(file)
                 stt_text = ibmservices.speechToText(f.filename,"mp3")
                 os.remove(f.filename)
                 #jason_string = json.dumps(stt_text)

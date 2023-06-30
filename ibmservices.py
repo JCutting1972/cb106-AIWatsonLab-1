@@ -38,7 +38,7 @@ assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
 assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
   
   
-def speechToText(filename, extn):
+def speechToText(filename, 'mp3'):
     recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
     recognition_service.set_service_url(stt_url)
     SPEECH_EXTENSION="*."+extn

@@ -11,18 +11,28 @@
   
 
   <form method="post" enctype="multipart/form-data">
-        <div>
-          <label for="audio_file">Choose file to upload</label>
-          <input type="file" id="file" name="file" multiple />
-          <audio scr="audio_file.mp3"></audio>
-          <button type='submit'>Submit</button>
-          <audio controls>
-          <scource src="path>
+        
+          
+          <input type="file"></input>
+          <audio controls></audio>
+          
+          <script>
+            var audio = document.querySelector('audio');
+            var input = document.querySelector('input');
+            input.addEventListener('change', function() {
+              var file = input.files[0];
+              var url = URL.createObjectURL(file);
+              audio.src = url;
+            });
+          </script>
+           
+
+         
           
        
        
        
-        <div>
+        
 
           
 
