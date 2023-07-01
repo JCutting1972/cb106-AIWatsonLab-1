@@ -27,7 +27,7 @@ response_text = None
 
 @app.route('/')
 def file_uploader():
-   return render_template('input.html')
+   return render_template('input3.html')
 
 @app.route('/audio/<filename>')
 def stream_mp3(filename):
@@ -40,9 +40,9 @@ def stream_mp3(filename):
         return Response(generate(), mimetype="audio/mpeg3")
 
 @app.route('/uploader', methods =  ['GET','POST'])
-def upload_fil(variable):
+def upload_file(variable):
    if request.method == 'POST':
-        f = request.files['filename']
+        f = request.files['input_text']
         try:
             if file != '':
                 l = len(f.filename)
@@ -77,6 +77,14 @@ def upload_fil(variable):
 if __name__ == "__main__":
     app.run(debug=True)
 
+from flask import Flask, request
+
+app = Flask(__name__)
+
+@app.route('/your-python-endpoint', methods=['POST'])
+def your_python_function():
+    file = request.files['file']
+    # do something with file
 
 
  
