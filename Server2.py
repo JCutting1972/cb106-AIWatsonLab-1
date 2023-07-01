@@ -29,20 +29,20 @@ response_text = None
 def file_uploader():
    return render_template('input.html')
 
-@app.route(file)
-def stream_mp3(file):
-    def generate():
+@app.route('/audio/<filename>')
+def stream_mp3(filename):
+   def generate():
         with open(file, 'rb') as fmp3:
             data = fmp3.read(1024)
             while data:
                 yield data
                 data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mpeg3")
+        return Response(generate(), mimetype="audio/mpeg3")
 
-@app.route('/uploader', methods = ['POST'])
-def upload_file():
+@app.route('/uploader', methods =  ['GET','POST'])
+def upload_fil(variable):
    if request.method == 'POST':
-        f = request.files['file']
+        f = request.files['filename']
         try:
             if file != '':
                 l = len(f.filename)
@@ -50,21 +50,29 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(file)
+    
                 stt_text = ibmservices.speechToText(f.filename,"mp3")
                 os.remove(f.filename)
                 #jason_string = json.dumps(stt_text)
+                #{"results":[ {"alternatives": [ {"transript: "the text", "confidence": .87}], "final": truee}]}
+                
+                
                # response1 = ibmservices.getResponseFromAssistant(stt_text)
                 transcript = stt_text['results'][0]['alternatives'][0]['transcript']
-                output = json.loads(transcript)
+                print(transcript)
+                #output = json.loads(transcript)
 
                
-                return  render_template(output.html,output= output)
+               # return  render_template(output.html,output= output)
                 
             else: 
                 raise Exception("Sorry. No filename recognized")
         except Exception as excp:
             print(excp.__traceback__)
             return str(excp),500
+            output = transcript
+            render_tenplate("output.html",output=output)
+       
 
 if __name__ == "__main__":
     app.run(debug=True)

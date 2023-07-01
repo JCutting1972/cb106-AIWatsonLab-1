@@ -5,15 +5,15 @@
       f1 { font-size: 16px; }
       input {text: 20px}
    </style>
- <body>
+<body>
     <head<><c1><h1><f1>IBM Speech to Text Translator </f1><h1><c1></head>
 
   
 
-  <form method="post" enctype="multipart/form-data">
+  
         
-          
-          <input type="file"></input>
+    <form method='POST' enctype="multipart/form-data" action= 'uploader'>  
+          <input type='file' id='filename' name='filename' placeholder = 'enter an mp3 file'>
           <audio controls></audio>
           
           <script>
@@ -40,8 +40,8 @@
 
    
         
-  </form>
+    </form>
 
   
- </body> 
+</body> 
 </html> 
