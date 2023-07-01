@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <style>
+      h1 {text-align: center;}
+      f1 { font-size: 16px; }
+      input {text: 20px}
+      
+      
+   </style>
+ <body>
+    <head<><c1><h1><f1>IBM Speech to Text Translator </f1><h1><c1></head>
+
+  
+
+  <form method="post" enctype="multipart/form-data">
+        
+          
+          <input type="file"></input>
+          <button type='submit'>Submit</button>
+
+          
+          
+          <script>
+            var audio = document.querySelector('audio');
+            var input = document.querySelector('input');
+            input.addEventListener('change', function() {
+              var file = input.files[0];
+              var url = URL.createObjectURL(file);
+              audio.src = url;
+
+
+
+            
+    
+   
+
+              const blob = new Blob([/* your data */], { type: 'application/octet-stream' });
+              const formData = new FormData();
+              formData.append('file', blob);
+
+              fetch('/your-python-endpoint', {method: 'POST',body: formData})
+               .then(response => response.json())
+               .then(data => {console.log(data);})
+               .catch(error => {console.error(error);});
+  
+
+          </script>
+             
+             
+         
+          
+       
+       
+       
+        
+
+          
+
+
+
+   
+        
+  </form>
+
+  
+ </body> 
+</html> 

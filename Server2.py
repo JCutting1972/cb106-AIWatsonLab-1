@@ -25,66 +25,63 @@ app = Flask(__name__)
 
 response_text = None
 
+
+
 @app.route('/')
 def file_uploader():
    return render_template('input3.html')
 
 @app.route('/audio/<filename>')
 def stream_mp3(filename):
-   def generate():
-        with open(file, 'rb') as fmp3:
+    def generate():
+        with open(filename, 'rb') as fmp3:
             data = fmp3.read(1024)
             while data:
                 yield data
                 data = fmp3.read(1024)
-        return Response(generate(), mimetype="audio/mpeg3")
+    return Response(generate(), mimetype="audio/mp3")
 
-@app.route('/uploader', methods =  ['GET','POST'])
-def upload_file(variable):
-   if request.method == 'POST':
-        f = request.files['input_text']
-        try:
-            if file != '':
-                l = len(f.filename)
-                extn = f.filename[l-3:l]
-                if extn not in ["mp3","wav"]:
-                    raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
-                f.save(file)
+
+
+@app.route('/your-python-endpoint', methods=['POST'])
+def your_python_function():
+  if request.method == 'POST':
+
+    file = request.files['file']
+   
+    #if request.method == 'POST':
+      #  f = request.files['input_text']
+       # try:
+           # if file != '':
+               # l = len(f.filename)
+               # extn = f.filename[l-3:l]
+               # if extn not in ["mp3","wav"]:
+               #     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
+              #  f.save(file)
     
-                stt_text = ibmservices.speechToText(f.filename,"mp3")
-                os.remove(f.filename)
+    stt_text = ibmservices.speechToText('file',"mp3")
+               # os.remove(f.filename)
                 #jason_string = json.dumps(stt_text)
                 #{"results":[ {"alternatives": [ {"transript: "the text", "confidence": .87}], "final": truee}]}
                 
                 
                # response1 = ibmservices.getResponseFromAssistant(stt_text)
-                transcript = stt_text['results'][0]['alternatives'][0]['transcript']
-                print(transcript)
+    transcript = stt_text['results'][0]['alternatives'][0]['transcript']
+                #print(transcript)
                 #output = json.loads(transcript)
 
                
-               # return  render_template(output.html,output= output)
+    return  render_template("output.html",output= output)
                 
-            else: 
-                raise Exception("Sorry. No filename recognized")
-        except Exception as excp:
-            print(excp.__traceback__)
-            return str(excp),500
-            output = transcript
-            render_tenplate("output.html",output=output)
+           # else: 
+           #     raise Exception("Sorry. No filename recognized")
+        #except Exception as excp:
+        #    print(excp.__traceback__)
+        #    return str(excp),500
+        #    output = transcript
+        #    render_tenplate("output.html",output=output)
        
 
 if __name__ == "__main__":
-    app.run(debug=True)
-
-from flask import Flask, request
-
-app = Flask(__name__)
-
-@app.route('/your-python-endpoint', methods=['POST'])
-def your_python_function():
-    file = request.files['file']
-    # do something with file
-
-
+        app.run(host="0.0.0.0", port=8080)
  
