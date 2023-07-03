@@ -31,47 +31,35 @@ response_text = None
 def file_uploader():
    return render_template('input3.html')
 
-@app.route('/audio/<filename>')
-def stream_mp3(filename):
-    def generate():
-        with open(filename, 'rb') as fmp3:
-            data = fmp3.read(1024)
-            while data:
-                yield data
-                data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mp3")
-
-
-
-@app.route('/your-python-endpoint', methods=['POST'])
-def your_python_function():
-  if request.method == 'POST':
-
-    file = request.files['file']
-   
-    #if request.method == 'POST':
-      #  f = request.files['input_text']
-       # try:
-           # if file != '':
-               # l = len(f.filename)
-               # extn = f.filename[l-3:l]
-               # if extn not in ["mp3","wav"]:
-               #     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
-              #  f.save(file)
+@app.route('/upload',methods = ['POST'])
+def upload():
     
-    stt_text = ibmservices.speechToText('file',"mp3")
+
+    
+    if request.method == 'POST':
+
+       # audio_file = request.files['audio']
+       # return 'audio file uploaded successfully!'
+        
+        
+        
+        return render_template("output.html", output = "Hello")
+
+
+    
+   # stt_text = ibmservices.speechToText('file',"mp3")
                # os.remove(f.filename)
                 #jason_string = json.dumps(stt_text)
                 #{"results":[ {"alternatives": [ {"transript: "the text", "confidence": .87}], "final": truee}]}
                 
                 
                # response1 = ibmservices.getResponseFromAssistant(stt_text)
-    transcript = stt_text['results'][0]['alternatives'][0]['transcript']
+    #transcript = stt_text['results'][0]['alternatives'][0]['transcript']
                 #print(transcript)
                 #output = json.loads(transcript)
 
                
-    return  render_template("output.html",output= output)
+    #return  render_template("output.html",output= output)
                 
            # else: 
            #     raise Exception("Sorry. No filename recognized")
