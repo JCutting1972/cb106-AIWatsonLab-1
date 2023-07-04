@@ -5,6 +5,8 @@ from flask import Flask, render_template, request, Response
 
 from package import ibmservices
 
+import urllib.request
+
 tts_api="qcORFfEHIHelOUL5tG_kaui6YBO1Kr2t2JlhaS_rPVS3"
 tts_url="https://api.au-syd.text-to-speech.watson.cloud.ibm.com/instances/e9b64468-a4c7-4a74-aadc-1b15d3d7bea4"
 
@@ -19,6 +21,7 @@ assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
 assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
 
 app = Flask(__name__)
+
 
 
 
@@ -38,7 +41,10 @@ def upload():
     
     if request.method == 'POST':
 
-       # audio_file = request.files['audio']
+        import urllib.request
+        urllib.request.urlretrieve("http://www.example.com/songs/mp3.mp3", "mp3.mp3")        
+
+        audio_file = request.files['audio']
        # return 'audio file uploaded successfully!'
         
         
