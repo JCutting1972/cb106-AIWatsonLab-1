@@ -47,21 +47,8 @@ def speechToText(filename, extn):
     result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
     return result["results"][0]["alternatives"][0]["transcript"]
 
-       # return (json.dumps(result, indent=2))
-   
-   
-def getResponseFromAssistant(chat_text):   
-   
-   
-   # recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
-    #recognition_service.set_service_url(stt_url)
-    #SPEECH_EXTENSION="*."+extn
-    #SPEECH_AUDIOTYPE="audio/"+extn
-    #audio_file=open(filename,"rb")
-    #result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
-    #return result["results"][0]["alternatives"][0]["transcript"]
-   
-    assistant=AssistantV2(version='2020-04-01',authenticator=IAMAuthenticator(assistant_api))
+def getResponseFromAssistant(chat_text):
+    assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
     assistant.set_service_url(assistant_url)
     session=assistant.create_session(assistant_id =ASSISTANT_ID)
     session_id=session.get_result()["session_id"]
@@ -148,6 +135,27 @@ input={'message_type': 'text','text': chat_text}).get_result()
 
 
    
+     
+   
+   # recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
+    #recognition_service.set_service_url(stt_url)
+    #SPEECH_EXTENSION="*."+extn
+    #SPEECH_AUDIOTYPE="audio/"+extn
+    #audio_file=open(filename,"rb")
+    #result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
+    #return result["results"][0]["alternatives"][0]["transcript"]
+   
+def speechToText(filename, extn):
+    recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
+    recognition_service.set_service_url(stt_url)
+    SPEECH_EXTENSION="*."+extn
+    SPEECH_AUDIOTYPE="audio/"+extn
+    audio_file=open(filename,"rb")
+    result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
+    return result["results"][0]["alternatives"][0]["transcript"]
+
+       # return (json.dumps(result, indent=2))
+   
    
 def getResponseFromAssistant(chat_text):   
    
@@ -182,6 +190,45 @@ input={'message_type': 'text','text': chat_text}).get_result()
             ).get_result().content)
 
     return resp_file
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+   # return result["results"][0]["alternatives"][0]["transcript"]
+
+#def #getResponseFromAssistant(chat_text):
+    #assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
+    #assistant.set_service_url(assistant_url)
+    #session=assistant.create_session(assistant_id =ASSISTANT_ID)
+    #session_id=session.get_result()["session_id"]
+    #response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
+#input={'message_type': 'text','text': chat_text}).get_result()
+    
+ #   response_text = response["output"]["generic"][0]["text"]
+   # authenticator = IAMAuthenticator(tts_api)
+    #text_to_speech = TextToSpeechV1(
+     #   authenticator=authenticator
+    #)
+  #  text_to_speech.set_service_url(tts_url)
+   # resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
+    #with open(resp_file, 'wb') as audio_file:
+     #   audio_file.write(
+      #      text_to_speech.synthesize(
+       #         response_text,
+        #        voice='en-US_MichaelV3Voice',
+          #      accept='audio/mp3'        
+           # ).get_result().content)
+
+   # return resp_file
 
 
 

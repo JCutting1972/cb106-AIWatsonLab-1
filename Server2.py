@@ -4,6 +4,8 @@ import os, uuid,json
 from flask import Flask, render_template, request, Response
 
 from package import ibmservices
+from package import getResponseFromAssistant
+from package import speechToText
 
 import urllib.request
 
@@ -30,52 +32,98 @@ response_text = None
 
 
 
+
+def speechToText(filename, extn):
+    recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
+    recognition_service.set_service_url(stt_url)
+    SPEECH_EXTENSION="*."+extn
+    SPEECH_AUDIOTYPE="audio/"+extn
+    audio_file=open(filename,"rb")
+    result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
+    return result["results"][0]["alternatives"][0]["transcript"]
+    
+
+
+
+    assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
+    assistant.set_service_url(assistant_url)
+    session=assistant.create_session(assistant_id =ASSISTANT_ID)
+    session_id=session.get_result()["session_id"]
+    response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
+input={'message_type': 'text','text': chat_text}).get_result()
+    response_text = response["output"]["generic"][0]["text"]
+    authenticator = IAMAuthenticator(tts_api)
+    text_to_speech = TextToSpeechV1(
+        authenticator=authenticator
+    )
+    text_to_speech.set_service_url(tts_url)
+    resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
+    with open(resp_file, 'wb') as audio_file:
+        audio_file.write(
+            text_to_speech.synthesize(
+                response_text,
+                voice='en-US_MichaelV3Voice',
+                accept='audio/mp3'        
+            ).get_result().content)
+
+    return resp_file
+
 @app.route('/')
 def file_uploader():
-   return render_template('input3.html')
-
-@app.route('/upload',methods = ['POST'])
-def upload():
-    
-
-    
-    if request.method == 'POST':
-
-        import urllib.request
-        urllib.request.urlretrieve("http://www.example.com/songs/mp3.mp3", "mp3.mp3")        
-
-        audio_file = request.files['audio']
-       # return 'audio file uploaded successfully!'
-        
-        
-        
-        return render_template("output.html", output = "Hello")
+   return render_template('upload.html')
 
 
-    
-   # stt_text = ibmservices.speechToText('file',"mp3")
-               # os.remove(f.filename)
-                #jason_string = json.dumps(stt_text)
-                #{"results":[ {"alternatives": [ {"transript: "the text", "confidence": .87}], "final": truee}]}
-                
-                
-               # response1 = ibmservices.getResponseFromAssistant(stt_text)
-    #transcript = stt_text['results'][0]['alternatives'][0]['transcript']
-                #print(transcript)
-                #output = json.loads(transcript)
-
-               
-    #return  render_template("output.html",output= output)
-                
-           # else: 
-           #     raise Exception("Sorry. No filename recognized")
-        #except Exception as excp:
-        #    print(excp.__traceback__)
-        #    return str(excp),500
-        #    output = transcript
-        #    render_tenplate("output.html",output=output)
        
 
+
+
+
+
+@app.route('/uploader', methods = ['POST'])
+def upload_file():
+   if request.method == 'POST':
+        f = request.files['file']
+        try:
+            if f.filename != '':
+                l = len(f.filename)
+                extn = 'mp3'
+                if extn not in ["mp3","wav"]:
+                    raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
+                f.save(f.filename)
+               # result = speechToText(f.filename,'mp3')
+                
+                os.remove(f.filename)
+
+             
+               # return getResponseFromAssistant(result)
+                
+                
+            else:
+                raise Exception("Sorry. No filename recognized")
+        except Exception as excp:
+            print(excp.__traceback__)
+            return str(excp),500
+
+
+@app.route('/audio/<filename>')
+def stream_mp3(filename):
+    def generate():
+        with open(filename, 'rb') as fmp3:
+            data = fmp3.read(1024)
+            while data:
+                yield data
+                data = fmp3.read(1024)
+    return Response(generate(), mimetype="audio/mpeg")    
+        
+        #os.remove(f.filename)
+
+        #ibmservices.getResponseFromAssistant(stt_text)
+        
+     #       else:
+      #          raise Exception("Sorry. No filename recognized")
+      #  except Exception as excp:
+      #      print(excp.__traceback__)
+      #      return str(excp),500
+
 if __name__ == "__main__":
-        app.run(host="0.0.0.0", port=8080)
- 
+    app.run(host="0.0.0.0", port=8080)
