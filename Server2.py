@@ -52,17 +52,8 @@ input={'message_type': 'text','text': transcript}).get_result()
    authenticator = IAMAuthenticator(tts_api)
    text_to_speech = TextToSpeechV1(authenticator=IAMauthenticator(assistant_api))
    text_to_speech.set_service_url(tts_url)
-   resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-   with open(resp_file, 'wb') as audio_file:
-        audio_file.write(
-            text_to_speech.synthesize(
-                response_text,
-                voice='en-US_MichaelV3Voice',
-                accept='audio/mp3'        
-            ).get_result().content)
-
-   return resp_file
-
+   with open('filename.wav','wb') as audio_file:
+       audio_file.write(text_to_speech.synthesize(transcript, voice='en-US_Henry3Voice',accept ='audio/mp3').get_results().content)
 @app.route('/')
 def file_uploader():
    return render_template('upload.html')
@@ -85,7 +76,8 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-                return speechToText(f.filename,extn)
+                return 'hello'
+                #return speechToText(f.filename,extn)
                 
                 #os.remove(f.filename)
 
