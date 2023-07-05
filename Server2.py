@@ -34,31 +34,26 @@ response_text = None
 
 
 def speechToText(filename, extn):
-    recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
-    recognition_service.set_service_url(stt_url)
-    SPEECH_EXTENSION="*."+extn
-    SPEECH_AUDIOTYPE="audio/"+extn
-    audio_file=open(filename,"rb")
-    result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
-    return result["results"][0]["alternatives"][0]["transcript"]
-    
-
-
-
-    assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
-    assistant.set_service_url(assistant_url)
-    session=assistant.create_session(assistant_id =ASSISTANT_ID)
-    session_id=session.get_result()["session_id"]
-    response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
-input={'message_type': 'text','text': chat_text}).get_result()
-    response_text = response["output"]["generic"][0]["text"]
-    authenticator = IAMAuthenticator(tts_api)
-    text_to_speech = TextToSpeechV1(
-        authenticator=authenticator
-    )
-    text_to_speech.set_service_url(tts_url)
-    resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-    with open(resp_file, 'wb') as audio_file:
+   recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
+   recognition_service.set_service_url(stt_url)
+   SPEECH_EXTENSION="*."+extn
+   SPEECH_AUDIOTYPE="audio/"+extn
+   audio_file=open(filename,"rb")
+   result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
+   return result["results"][0]["alternatives"][0]["transcript"]
+   transcript =  result['results'][0]['alteratives'][0]['transcript']
+   assistant=AssistantV1(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
+   assistant.set_service_url(assistant_url)
+   session=assistant.create_session(assistant_id =ASSISTANT_ID)
+   session_id=session.get_result()["session_id"]
+   response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
+input={'message_type': 'text','text': transcript}).get_result()
+   response_text = response["output"]["generic"][0]["text"]
+   authenticator = IAMAuthenticator(tts_api)
+   text_to_speech = TextToSpeechV1(authenticator=IAMauthenticator(assistant_api))
+   text_to_speech.set_service_url(tts_url)
+   resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
+   with open(resp_file, 'wb') as audio_file:
         audio_file.write(
             text_to_speech.synthesize(
                 response_text,
@@ -66,14 +61,14 @@ input={'message_type': 'text','text': chat_text}).get_result()
                 accept='audio/mp3'        
             ).get_result().content)
 
-    return resp_file
+   return resp_file
 
 @app.route('/')
 def file_uploader():
    return render_template('upload.html')
 
 
-       
+response_text = None      
 
 
 
@@ -86,13 +81,13 @@ def upload_file():
         try:
             if f.filename != '':
                 l = len(f.filename)
-                extn = 'mp3'
+                extn = f.filename[l-3:l]
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-               # result = speechToText(f.filename,'mp3')
+                return speechToText(f.filename,extn)
                 
-                os.remove(f.filename)
+                #os.remove(f.filename)
 
              
                # return getResponseFromAssistant(result)
@@ -113,7 +108,7 @@ def stream_mp3(filename):
             while data:
                 yield data
                 data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mpeg")    
+    return Response(generate(), mimetype="audio/mp3")    
         
         #os.remove(f.filename)
 

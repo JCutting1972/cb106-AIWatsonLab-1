@@ -47,7 +47,7 @@ def speechToText(filename, extn):
     result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
     return result["results"][0]["alternatives"][0]["transcript"]
 
-def getResponseFromAssistant(chat_text):
+def getResponseFromAssistant(result):
     assistant=AssistantV2(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
     assistant.set_service_url(assistant_url)
     session=assistant.create_session(assistant_id =ASSISTANT_ID)
