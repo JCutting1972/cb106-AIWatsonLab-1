@@ -2,11 +2,10 @@
 from flask import Flask, render_template, request, Response
 
 import os
-from package import ibmservices
+
+from ibmservices import speechToText, getResponseFromAssistant
 
 
-from package import getResponseFromAssistant
-from package import speechToText
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import SpeechToTextV1,TextToSpeechV1, AssistantV1, AssistantV2
 import os, uuid,json
@@ -56,8 +55,9 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-                stt_text=ibmservices.speechToText(f.filename,extn)
+                stt_text=ibmservices.speechToText(f.filename, extn)
                 os.remove(f.filename)
+
                 return ibmservices.getResponseFromAssistant(stt_text)
             else:
                 raise Exception("Sorry. No filename recognized")

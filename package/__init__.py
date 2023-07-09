@@ -1,2 +1,2 @@
-from . ibmservices import speechToText
+from . ibmservices import *
 from . ibmservices import getResponseFromAssistant

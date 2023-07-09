@@ -68,9 +68,9 @@ def getResponseFromAssistant(chat_text):
     session_id=session.get_result()["session_id"]
     response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
 input={'message_type': 'text','text': chat_text}).get_result()
-    response_text = chat_text
     
-   # response_text = response["output"]["generic"][0]["text"]
+    
+    response_text = response["output"]["generic"][0]["text"]
     
     
     authenticator = IAMAuthenticator(tts_api)
