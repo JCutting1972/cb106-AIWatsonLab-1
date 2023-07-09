@@ -28,10 +28,6 @@ app = Flask(__name__)
 
 
 
-response_text = None
-
-
-
 
 
    
@@ -39,13 +35,11 @@ response_text = None
 
 
 @app.route('/')
-  
-
 def file_uploader():
    return render_template('upload.html')
 
 
-response_text = None      
+  
 
 
 
@@ -53,7 +47,7 @@ response_text = None
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file():
-   if request.method == 'POST':
+    if request.method == 'POST':
         f = request.files['file']
         try:
             if f.filename != '':
@@ -62,10 +56,10 @@ def upload_file():
                 if extn not in ["mp3","wav"]:
                     raise Exception("Sorry, the file type is unsupported. Try .mp3 or .wav files")
                 f.save(f.filename)
-                return 'hello'
+               # return 'hello'
                 #return speechToText(f.filename,extn)
-                
-                os.remove(f.filename)
+                filename = f.filename
+               # os.remove(f.filename)
                 def speechToText(filename, extn):
                  recognition_service=SpeechToTextV1(IAMAuthenticator(stt_api))
                  recognition_service.set_service_url(stt_url)
@@ -75,57 +69,29 @@ def upload_file():
                  result=recognition_service.recognize(audio=audio_file, content_type=SPEECH_AUDIOTYPE).get_result()
                  return result["results"][0]["alternatives"][0]["transcript"]
                  transcript =  result['results'][0]['alteratives'][0]['transcript']
-                 os.remove(f.filename)
-                 assistant=AssistantV1(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
-                 assistant.set_service_url(assistant_url)
-                 session=assistant.create_session(assistant_id =ASSISTANT_ID)
-                 session_id=session.get_result()["session_id"]
-                 response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
-                 input={'message_type': 'text','text': result}).get_result()
-                 response_text = response["output"]["generic"][0]["text"]
-                 authenticator = IAMAuthenticator(tts_api)
-  
-                 text_to_speech = TextToSpeechV1(
-                 authenticator=authenticator
-                 )          
-                 text_to_speech.set_service_url(tts_url)
-                 resp_file = "response"+str(uuid.uuid1())[0:4]+".mp3"
-                 with open(resp_file, 'wb') as audio_file:
-                   audio_file.write(
-                    text_to_speech.synthesize(
-                    response_text,
-                    voice='en-US_MichaelV3Voice',
-                    accept='audio/wav'        
-                    ).get_result().content)
-
-                 return resp_file
-
-             
-               
-                
-                
-         
+                 #os.remove(f.filename)
+                 print(transcript)
 
 
-@app.route('/audio/<filename>')
-def stream_mp3(filename):
-    def generate():
-        with open(filename, 'rb') as fmp3:
-            data = fmp3.read(1024)
-            while data:
-                yield data
-                data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mp3")    
-        
-    #os.remove(f.filename)
-#
-        #ibmservices.getResponseFromAssistant(stt_text)
-        
-           else:
+
+
+            else:
               raise Exception("Sorry. No filename recognized")
-     except Exception as excp:
-           print(excp.__traceback__)
-           return str(excp),500
+
+    else:
+              raise Exception("Sorry. No filename recognized")        
+               #  assistant=AssistantV1(version='2019-02-28',authenticator=IAMAuthenticator(assistant_api))
+               #  assistant.set_service_url(assistant_url)
+                # session=assistant.create_session(assistant_id =ASSISTANT_ID)
+                # session_id=session.get_result()["session_id"]
+                # response=assistant.message(assistant_id=ASSISTANT_ID,session_id=session_id, 
+               #  input={'message_type': 'text','text': transcript}).get_result()
+               #  response_text = response["output"]["generic"][0]["text"]
+                 
+                 
+                # print (response_text)
+                 
+                 #authenticator = IAMAuthenticator(tts_api)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
