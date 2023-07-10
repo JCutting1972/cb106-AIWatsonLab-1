@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, Response
 
 import os
 
-from ibmservices import speechToText, getResponseFromAssistant
+import ibmservices
 
 
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
@@ -27,8 +27,10 @@ assistant_api="FgvhJhrvyxG09ko05FnhABEiTGfQXW2jlKS0bjTMcLry"
 assistant_url="https://api.au-syd.assistant.watson.cloud.ibm.com/instances/cc131269-1e43-4679-b902-462cbac0c5e0"
 
 
-app = Flask(__name__)
+
 response_text = None
+app = Flask(__name__)
+
 
 @app.route('/')
 def file_uploader():
@@ -57,8 +59,10 @@ def upload_file():
                 f.save(f.filename)
                 stt_text=ibmservices.speechToText(f.filename, extn)
                 os.remove(f.filename)
+                print(stt_text)
 
-                return ibmservices.getResponseFromAssistant(stt_text)
+                return  ibmservices.getResponseFromAssistant(stt_text)
+                
             else:
                 raise Exception("Sorry. No filename recognized")
         except Exception as excp:
