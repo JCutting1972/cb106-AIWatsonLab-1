@@ -36,15 +36,7 @@ app = Flask(__name__)
 def file_uploader():
    return render_template('upload.html')
 
-@app.route('/audio/<filename>')
-def stream_mp3(filename):
-    def generate():
-        with open(filename, 'rb') as fmp3:
-            data = fmp3.read(1024)
-            while data:
-                yield data
-                data = fmp3.read(1024)
-    return Response(generate(), mimetype="audio/mpeg3")
+
 
 @app.route('/uploader', methods = ['POST'])
 def upload_file():
@@ -61,13 +53,28 @@ def upload_file():
                 os.remove(f.filename)
                 print(stt_text)
 
-                return  ibmservices.getResponseFromAssistant(stt_text)
+                filename = ibmservices.getResponseFromAssistant(stt_text)
+                
                 
             else:
                 raise Exception("Sorry. No filename recognized")
         except Exception as excp:
             print(excp.__traceback__)
+        
             return str(excp),500
 
+
+
+@app.route('/audio/<filename>')
+def stream_mp3(filename):
+    def generate():
+        with open(filename, 'rb') as fmp3:
+            data = fmp3.read(1024)
+            while data:
+                yield data
+                data = fmp3.read(1024)
+    return Response(generate(), mimetype="audio/mpeg3")
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080)  
+    app.run(host="0.0.0.0", port=8080)
